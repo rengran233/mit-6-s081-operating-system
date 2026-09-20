@@ -1,0 +1,278 @@
+
+<HTML>
+<HEAD>
+<TITLE>
+6.1810 / Fall 2024
+</TITLE>
+<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" href="labs/labs.css" type="text/css" />
+
+</HEAD>
+
+<BODY BGCOLOR=#ffffff TEXT=#000000>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">6.1810: Operating System Engineering</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+	    <li><a href="schedule.html">Schedule</a></li>
+	    <li class="dropdown">
+              <a href="general.html#" class="dropdown-toggle" data-toggle="dropdown">Class<span class="caret"></span></a>
+	      <ul class="dropdown-menu" role="menu">
+                <li><a href="overview.html">Overview</a></li>
+                <li><a href="general.html">Course Structure</a></li>
+		<li><a href="https://pdos.csail.mit.edu/6.1810/2023/">6.1810 2023</a></li>
+	      </ul>
+	    </li>
+            <li class="dropdown">
+              <a href="general.html#" class="dropdown-toggle" data-toggle="dropdown">Labs<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+		<li><a href="tools.html">Tools</a></li>
+		<li><a href="labs/guidance.html">Guidance</a></li>
+                <li><a href="labs/util.html">Lab Utilities</a></li>
+		<li><a href="labs/syscall.html">Lab System calls</a></li>
+		<li><a href="labs/pgtbl.html">Lab Page tables</a></li>
+		<li><a href="labs/traps.html">Lab Traps</a></li>
+		<li><a href="labs/cow.html">Lab Copy on-write</a></li>
+		<li><a href="labs/net.html">Lab network driver</a></li>
+		<li><a href="labs/lock.html">Lab Lock</a></li>
+		<li><a href="labs/fs.html">Lab File system</a></li>
+		<li><a href="labs/mmap.html">Lab mmap</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="general.html#" class="dropdown-toggle" data-toggle="dropdown">xv6<span class="caret"></span></a>
+	      <ul class="dropdown-menu" role="menu">
+		<li><a href="xv6.html">xv6</a></li>
+		<li><a href="xv6/book-riscv-rev4.pdf">xv6 book</a></li>
+	      </ul>
+	    </li>
+	    <li><a href="reference.html">References</a></li>  
+	    <li><a href="https://piazza.com/mit/fall2024/61810">Piazza</a></li>
+          </ul>
+	  <ul class="nav navbar-nav navbar-right">
+	    <p class="navbar-text">2024</p>
+	  </ul>
+        </div>
+      </div>
+    </div>
+
+
+<div class="container">
+
+
+
+
+
+
+<H1>
+General Information
+</H1>
+<p>
+<b><a href="general.html#audience">Who should take 6.1810</a></b> //
+<b><a href="general.html#communication">Communication</a></b> //
+<b><a href="general.html#grading">Grading</a></b> //
+<b><a href="general.html#labs">Labs</a></b> //
+<b><a href="general.html#textbook">Text books</a></b> //
+<b><a href="general.html#homework">Homework</a></b> //
+<b><a href="general.html#collaboration">Collaboration</a></b> //
+<b><a href="general.html#meetings">Class meetings</a></b> //
+<b><a href="general.html#staff">Staff</a></b> //
+<b><a href="general.html#officehours">TA office hours</a></b>
+</p>
+
+<p><a name="audience"></a>
+<h2>Who should take 6.1810</h2>
+
+<p> 6.1810 is intended for undergraduates who enjoyed 6.1910 (6.004) and want to
+  learn about design and implementation of operating systems, and
+  their use as a foundation for systems programming.
+
+<p><a name="communication"></a>
+<h2>Communication</h2>
+
+<p>We will distribute assignments on
+  the <a href="http://pdos.csail.mit.edu/6.1810/">course web site</a>,
+  and make all announcements through piazza.
+  The course web site has
+  the schedule for the term on the <a href="schedule.html">schedule page</a>.
+
+<p><a name="grading"></a>
+  <h2>Grading policy</h2>
+
+<p>Grades in 6.1810 will be based on:
+  <ul>
+
+   <li> The labs (50%). The score for an individual lab is the output
+     of <tt>make grade</tt>.  All labs are weighted equally.
+
+   <li> The exams (30%). We expect students to take the exams in
+     person at the scheduled time: the midterm exam is during regular
+     class meeting time and the final exam is finals week.  (A
+     conflicting class is an invalid reason to miss the midterm.)
+     
+   <li> Check-off meetings (15%).  During the check-off meetings we
+   will ask you a few questions about your lab solution.  We expect to
+   hold 3 check-off meetings per student for
+   randomly-selected labs. The check-off
+   meetings will be graded on scale of 0 to 5.
+
+   <li> Home-work questions (5%).
+
+  </ul>
+
+<p>You must submit all labs in order to pass the class.
+
+<p>There are two exams, one during the term and one in finals week.
+
+<p><a name="labs"></a>
+<h2>Labs</h2>
+
+<p>To turn in each lab, run <tt>make zipball</tt> in your lab
+directory and upload the resulting <tt>lab.zip</tt> file to Gradescope.
+The submission deadline is 11:59:59pm on the day that the
+lab is due. You can turn in as many times as you like before the
+deadline. The Gradescope autograder uses <tt>make grade</tt> to
+assign a grade to your submission.
+<p> You have a total of 72 late hours for the semester. Each hour late in excess
+of 72 hours will penalize your total lab grade by 1&#37;, up to a maximum of
+50%.  Late hours are allocated greedily, so they are allocated to earlier labs
+before later labs. Due to institute regulations, late hours may not be used for
+the last lab (due on Dec 6).</p>
+
+<p>We suggest that you save your late hours for unexpected
+emergencies. For predictable situations (athletic events, deadlines in
+other classes, job interviews, etc.) we expect you to manage your time
+so as to finish assignments by the due date. If you have exhausted
+your late hours but nevertheless encounter an emergency that causes
+you to need an extension, we ask that you talk to S3 and ask them to
+send us a letter supporting your request.
+</p>
+
+<!-- That is, the lab component of the overall grade drops by
+       ceil((cumulative late - 72 hours)/1 day)
+     letter grades. -->
+
+<h2 id="homework">Lecture questions/Homeworks</h2>
+
+<p>The lecture questions/homeworks are intended to make you think
+about the lecture topic. They are due before the start of lecture
+(i.e., 1pm) on the specified due dates.  We would appreciate if you
+submit lecture questions well before 1p (e.g., the night before) so
+that we can prepare to answer your questions during lecture.
+You can miss a few lecture questions/homeworks over the semester
+without any penalty.</p>
+
+<h2 id="textbook">Textbooks</h2>
+
+<p>6.1810 relies on the following books:
+<ul>
+
+  <li><a href="xv6/book-riscv-rev4.pdf">xv6: A simple, Unix-like teaching operating
+      system</a> by R. Cox, F. Kaashoek, and R. Morris.
+
+  <li>The C programming language (second edition)</i> by Kernighan
+and Ritchie. Prentice Hall, Inc., 1988. ISBN 0-13-110362-8, 1998.
+
+</ul>
+
+<p><a name="collaboration"></a>
+<h2>Collaboration</h2>
+
+<p>You are welcome to discuss the labs (and homeworks) with other
+students, but all of your written work and code must be your own and
+must carefully acknowledge all contributions of ideas by others,
+whether from classmates or from sources you have read. Please don't
+look at anyone else's code for the labs or homework.  Please feel free
+to ask and answer questions on Piazza, about labs, homework, readings,
+and lectures.
+</p>
+
+<p>
+Do not post your lab or homework solutions on publicly accessible web
+sites (such as GitHub) or file spaces (such as your Athena Public
+directory).
+</p>
+
+<p><a name="meetings"></a>
+<h2>Class meetings</h2>
+
+<p>Lectures will be held on Monday and Wednesday from 1:00pm to 2:30pm
+in person.
+
+<p><a name="staff"></a>
+<h2>Staff</h2>
+
+<p><b>Lecturer</b><br>
+  <a href="https://pdos.csail.mit.edu/~kaashoek/">Frans Kaashoek</a><br>
+  <a href="https://pdos.csail.mit.edu/~rtm/">Robert Morris</a><br>
+
+<p><b>Teaching assistants</b><br>
+Elie Cuevas (eliec) <br>
+Kenneth Choi (kenchoi) <br>
+Aryan Kumar (aryan02) <br>
+Si Liang Lei (siliangl) <br>
+Ivy Wu (ivywu) <br>
+
+<p><b>Staff mailing list</b><br>
+<i>61810-staff@lists.csail.mit.edu</i>, but we would prefer that you
+use Piazza.
+
+<!-- RULE: officehours -->
+<p><a name="officehours"></a>
+
+<h2>TA office hours</h2>
+<p>For office hours with TBD locations, we will currently hold them in the Stata Center (Building 32) G9 lounge (right outside the elevators).<br>
+
+<br>
+Monday: 7pm-10pm (34-303, Ivy)<br>
+Tuesday: 10:30am-1pm (24-319, Elie)<br>
+Tuesday: 1pm-3:30pm (24-323, Brandon)<br>
+Tuesday: 4:30pm-7pm (34-304, Aryan & Kenneth)<br>
+Wednesday: 10am-12pm (24-321, Ivy)<br>
+Wednesday: 5pm-7:30pm (34-303, Kenneth)<br>
+Wednesday: 7:30pm-10pm (34-303, Aryan)<br>
+Thursday: 10:30am-1pm (24-319, Elie)<br>
+Friday: 1pm-3:30pm (24-319, Brandon)<br>
+
+<br>
+
+<!-- End Page Content -->
+
+<hr>
+
+<font style="font-size: 12px;">
+<p>Questions or comments regarding 6.1810?  Send e-mail to the course staff at
+<A
+HREF="mailto:61810-staff@lists.csail.mit.edu"><I>61810-staff@lists.csail.mit.edu</I></A>.
+
+<p><a rel="license" href="https://creativecommons.org/licenses/by/3.0/us/"><img
+alt="Creative Commons License" style="border-width:0"
+src="https://i.creativecommons.org/l/by/3.0/us/88x31.png" ></a> <B><A HREF="general.html#top">Top</A></B> //
+<B><A HREF="index.html">6.1810 home</A></B> // 
+<i>Last updated Thursday, 04-Sep-2025 23:15:05 EDT</i>
+</font>
+
+</div>
+
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+</BODY>
+</HTML>
+
