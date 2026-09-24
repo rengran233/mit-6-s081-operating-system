@@ -14,7 +14,7 @@ main(int argc, char *argv[])
         printf("fork error");
         exit(1);
     } else if (pid > 0) {
-        // child process
+        // parent process
         close(right_pipe[0]);
         for (int i = 2; i <= 280; i++) {
             write(right_pipe[1], &i, 4);
@@ -22,7 +22,7 @@ main(int argc, char *argv[])
         close(right_pipe[1]);
         wait(0);
     } else {
-        // parent process
+        // child process
         int prime_to_sieve = 0;
         int left_pipe[2];
         int num = 0;
@@ -34,7 +34,7 @@ main(int argc, char *argv[])
         read(left_pipe[0], &prime_to_sieve, 4);
         printf("prime %d\n", prime_to_sieve);
 
-        while (read(left_pipe[0], &num, 4)) {
+        while (read(left_pipe[0], &num, 4) > 0) {
             if (num % prime_to_sieve != 0) {
                 write(right_pipe[1], &num, 4);
                 if (!has_child) {
@@ -46,7 +46,10 @@ main(int argc, char *argv[])
                         // child proc set
                         has_child = 0;
                         prime_to_sieve = num;
+
+                        close(left_pipe[0]); // no longer need grandparent's read end
                         left_pipe[0] = right_pipe[0];
+                        close(right_pipe[1]);
                         pipe(right_pipe);
                     }
                 }
@@ -54,6 +57,7 @@ main(int argc, char *argv[])
         }
         close(right_pipe[0]);
         close(right_pipe[1]);
+        wait(0);
     }
 
     exit(0);
