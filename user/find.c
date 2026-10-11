@@ -4,26 +4,6 @@
 #include "kernel/stat.h"
 #include "kernel/fcntl.h"
 
-char*
-get_base(char *path)
-{
-  static char buf[DIRSIZ+1];
-  char *p;
-
-  // Find first character after last slash.
-  for(p=path+strlen(path); p >= path && *p != '/'; p--)
-    ;
-  p++;
-
-  // Return base name.
-  if(strlen(p) >= DIRSIZ)
-    return p;
-  memmove(buf, p, strlen(p));
-  *(buf + strlen(p)) = 0;
-
-  return buf;
-}
-
 void
 find(char *path, char *target)
 {
@@ -33,64 +13,51 @@ find(char *path, char *target)
   struct stat st;     // file metadata
 
   if((fd = open(path, O_RDONLY)) < 0){
-      fprintf(2, "find: cannot open %s\n", path);
-      return;
+    fprintf(2, "find: cannot open %s\n", path);
+    return;
   }
-
   if(fstat(fd, &st) < 0){
-      fprintf(2, "find: cannot stat %s\n", path);
-      close(fd);
-      return;
+    fprintf(2, "find: cannot stat %s\n", path);
+    close(fd);
+    return;
   }
+  if(strlen(path) + 1 + DIRSIZ + 1 > sizeof buf){
+    printf("ls: path too long\n");
+    return;
+  }
+  // copy path to buf and move pointer
+  strcpy(buf, path);
+  p = buf+strlen(buf);
+  *p++ = '/';
+  // read every dirent
+  while(read(fd, &de, sizeof(de)) == sizeof(de)){
+    // . and .. directories will cause stack overflow
+    if(strcmp(de.name, ".") == 0 || strcmp(de.name, "..") == 0)
+      continue;
+    // if inode is null
+    if(de.inum == 0)
+      continue;
 
-  switch(st.type){
-  case T_DEVICE:
-  case T_FILE:{
-    // print the path
-    char *base = get_base(path);
-    if (strcmp(base, target) == 0) {
-      printf("%s\n", path);
-    }
-    break;
+    // attach base name after path
+    memmove(p, de.name, DIRSIZ);
+    p[DIRSIZ] = 0; // de.name has no tail '\0'
+    // get stat here
+    if(stat(buf, &st) < 0){
+      printf("find: cannot stat %s\n", buf);
+      continue;
     }
 
-  case T_DIR:
-    if(strlen(path) + 1 + DIRSIZ + 1 > sizeof buf){
-      printf("ls: path too long\n");
-      break;
-    }
-    // write after path
-    strcpy(buf, path);
-    p = buf+strlen(buf);
-    *p++ = '/';
-    // read every dirent
-    while(read(fd, &de, sizeof(de)) == sizeof(de)){
-      // if . and .. directories will cause stack overflow
-      if(strcmp(de.name, ".") == 0 || strcmp(de.name, "..") == 0)
-        continue;
-      if(de.inum == 0)
-        continue;
-      memmove(p, de.name, DIRSIZ);
-      p[DIRSIZ] = 0; // de.name has no tail '\0'
-      if(stat(buf, &st) < 0){
-        printf("find: cannot stat %s\n", buf);
-        continue;
-      }
-
+    // if dirent is a directory, find recursively
+    if(st.type == T_DIR)
       find(buf, target);
+
+    // print target path
+    if(strcmp(de.name, target) == 0){
+      printf("%s\n", buf);
     }
-    break;
   }
 
   close(fd);
-}
-
-void
-_test(char *path)
-{
-  char *p;
-  p = get_base(path);
-  printf("base name: %s\n", p);
 }
 
 int
