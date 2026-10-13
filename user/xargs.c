@@ -1,8 +1,6 @@
 #include "kernel/types.h"
 #include "user/user.h"
 
-// stdin读一行作为参数，每行fork一个新进程
-
 int main(int argc, char *argv[]) {
   if (argc < 2) {
     printf("need at least 2 args\n");
@@ -25,7 +23,7 @@ int main(int argc, char *argv[]) {
   // read successive args from pipe and exec line by line
   char c;
   while (read(0, &c, 1) > 0) {
-    if (c == ' ') {
+    if (c == ' ' || c == '\n') {
       *p = '\0'; // C string spec
       p++;
       if (strlen(line) > 0) {
@@ -33,22 +31,20 @@ int main(int argc, char *argv[]) {
         sub_cnt++;
       }
       line = p;
-    } else if (c == '\n') {
-      *p = '\0'; // C string spec
-      p++;
-      if (strlen(line) > 0) {
-        sub_argv[sub_cnt] = line;
-        sub_cnt++;
-      }
-      line = p;
+
+      if (c != '\n') continue;
+
       sub_argv[sub_cnt] = 0; // exec() spec
-      if (fork() == 0) {
-        exec(sub_cmd, sub_argv);
-        fprintf(2, "xargs: exec %s failed\n", sub_cmd);                                                                                                                               
-        exit(1);     
+      if (sub_cnt > base_cnt) { // prevent continuous '\n'
+        if (fork() == 0) {
+          exec(sub_cmd, sub_argv);
+          fprintf(2, "xargs: exec %s failed\n", sub_cmd);                                                                                                                               
+          exit(1);     
+        }
+        wait(0);
       }
-      wait(0);
       sub_cnt = base_cnt;
+      p = line = buf;
     } else {
       *p = c;
       p++;
@@ -57,15 +53,3 @@ int main(int argc, char *argv[]) {
 
   exit(0);
 }
-
-/*
-$ echo 1 | xargs echo 1
-1 1
-$ echo 1 2 | xargs echo
-1 2
-$ echo 3 2 | xargs echo 1 1
-1 1 3 2
-$ (echo 1; echo 2) | xargs echo 3
-3 1
-3 2
-*/
