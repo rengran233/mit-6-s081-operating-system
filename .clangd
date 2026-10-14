@@ -1,0 +1,33 @@
+CompileFlags:
+  Add:
+    - --target=riscv64-linux-gnu
+    - -mabi=lp64
+    - -fno-builtin
+    - -I.
+    - -Ikernel
+    - -Iuser
+  Remove:
+    - -m*
+    - -fno-stack-protector
+    - -fno-pie
+    - -no-pie
+    - -nopie
+    - -march=*
+    - -mcmodel=*
+
+---
+If:
+  PathMatch: kernel/.*\.h
+  PathExclude: kernel/types.h
+CompileFlags:
+  Add:
+    - -include
+    - .clangd-uint.h
+
+---
+If:
+  PathMatch: user/user\.h
+CompileFlags:
+  Add:
+    - -include
+    - .clangd-uint.h
