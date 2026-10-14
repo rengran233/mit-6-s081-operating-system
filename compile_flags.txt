@@ -1,0 +1,4 @@
+--target=riscv64-linux-gnu
+-mabi=lp64
+-fno-builtin
+-I.
