@@ -6,8 +6,20 @@
 int
 main(int argc, char *argv[])
 {
-  // your code here.  you should write the secret to fd 2 using write
-  // (e.g., write(2, secret, 8)
+  char *end = sbrk(PGSIZE*32);
+  end += 8; // position of "very"
+  for (int i = 1; i < 32; i++) {
+    char buf[5]; buf[4] = '\0';
+    memmove(buf, end, 4);
+    printf("the str is: %s\n", buf);
+    if (strcmp(buf, "very") == 0) {
+      printf("found secret\n");
+      end += 24; // position of secret
+      write(2, end, 8);
+      break;
+    }
+    end += PGSIZE;
+  }
 
   exit(1);
 }
