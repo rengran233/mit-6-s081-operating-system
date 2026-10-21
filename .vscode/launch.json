@@ -1,0 +1,49 @@
+{
+  // xv6 debugging on Remote-WSL, using the already-installed CodeLLDB extension.
+  //
+  // Workflow (two terminals):
+  //   1. start QEMU:  Ctrl+Shift+B  (runs the "qemu-gdb" task), or `make qemu-gdb`
+  //                   in an integrated terminal -- you need the terminal to type
+  //                   into the xv6 shell.
+  //   2. press F5 and pick one of the configurations below.
+  //   3. the debugger connects with the CPU frozen at the reset vector (0x1000).
+  //      Press F5 / Continue once to actually boot xv6.
+  //
+  // The port is NOT arbitrary: Makefile computes GDBPORT = (uid % 5000) + 25000.
+  // For uid 1000 that is 26000. If it ever changes, `make qemu-gdb` prints the
+  // regenerated .gdbinit -- match the port there.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Kernel symbols only. Enough for everything in kernel/.
+      "name": "xv6: kernel (QEMU :26000)",
+      "type": "lldb",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "targetCreateCommands": [
+        "target create ${workspaceFolder}/kernel/kernel"
+      ],
+      "processCreateCommands": [
+        "gdb-remote localhost:26000"
+      ]
+    },
+    {
+      // Kernel + one user program. Every xv6 user binary is linked at VA 0
+      // (user/user.ld starts with ". = 0x0;"), so `target modules add` needs no
+      // load address -- but you can only add ONE at a time, otherwise their
+      // symbols collide at 0x0 and the source lines shown will be wrong.
+      // Swap _grep for _trace / _sysinfotest / _cat as needed.
+      "name": "xv6: kernel + user/_grep",
+      "type": "lldb",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "targetCreateCommands": [
+        "target create ${workspaceFolder}/kernel/kernel",
+        "target modules add ${workspaceFolder}/user/_grep"
+      ],
+      "processCreateCommands": [
+        "gdb-remote localhost:26000"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  // Ctrl+Shift+B runs the default build task ("build").
+  // Use "Tasks: Run Task" -> "qemu-gdb" to start QEMU in its own terminal.
+  //
+  // "focus": true matters: QEMU runs with -nographic, so its serial console is
+  // the terminal's stdin/stdout. You must be able to click into that terminal
+  // and type xv6 shell commands (e.g. `trace 32 grep hello README`).
+  // Do NOT switch this to a silent/background task -- you would lose the console.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "make",
+      "args": ["kernel/kernel"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "qemu-gdb",
+      "type": "shell",
+      "command": "make",
+      "args": ["qemu-gdb"],
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always",
+        "focus": true
+      }
+    },
+    {
+      "label": "qemu (no gdb)",
+      "type": "shell",
+      "command": "make",
+      "args": ["qemu"],
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always",
+        "focus": true
+      }
+    }
+  ]
+}
