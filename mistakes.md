@@ -4,16 +4,12 @@
 
 ### System Call Tracing
 
-要求：打印每个进程及其子进程执行的特定系统调用
-输入：mask，标记哪些调用需要被 trace
-返回值：返回
-输出：print 相关调用信息
-- print 的位置？
-如果在syscall处打印，如何判断是否有trace生效
-- 如何判定打印
-- 打印信息的来源
-- 
+在 struct proc 中添加一个 mask 属性，通过 trace 设置，每次执行 syscall 时都会使用 mask 位掩码来决定是否打印调用信息
 
-mask 初始化
+### Attack
 
-位掩码筛选
+attacktest 的主进程分别在两个子进程中 exec 了 secret 和 attack。如何用 attack 获取另一个子进程中没有清理的内存？直接新分配吗
+
+- xv6 使用 FIFO 结构管理内存页的分配和释放，直接申请就能得到秘密页
+
+进程的 fork exec 等操作也会造成内存分配，直接复制 secret 的代码不能精准找到秘密页，需要遍历哪个页包含了信息
